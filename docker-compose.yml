@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  # Timeseries DB
+  timeseries_database:
+    image: "timescale/timescaledb:2.8.1-pg14"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tsd
+    # command: postgres -c shared_preload_libraries=timescaledb
+    volumes:
+      - ./pgdata/timeseries/:/var/lib/postgresql/data
+      - ./timeseries-init.sql:/docker-entrypoint-initdb.d/timeseries-init.sql # Ovo run-a custom sql file sa ostalima koje postgres mora odradit na initu
+
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container2
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mail@mail.com
+      PGADMIN_DEFAULT_PASSWORD: 1234
